@@ -5,21 +5,22 @@ import { LLM_LIST_MAP } from "./llm/llm-list"
 
 export const fetchHostedModels = async (profile: Tables<"profiles">) => {
   try {
-    const providers = ["google", "anthropic", "mistral", "groq", "perplexity"]
+    // const providers = ["google", "anthropic", "mistral", "groq", "perplexity"]
+    const providers = ["agenta2z"]
 
-    if (profile.use_azure_openai) {
-      providers.push("azure")
-    } else {
-      providers.push("openai")
-    }
+    // if (profile.use_azure_openai) {
+    //   providers.push("azure")
+    // } else {
+    //   providers.push("openai")
+    // }
 
-    const response = await fetch("/api/keys")
+    // const response = await fetch("/api/keys")
 
-    if (!response.ok) {
-      throw new Error(`Server is not responding.`)
-    }
+    // if (!response.ok) {
+    //   throw new Error(`Server is not responding.`)
+    // }
 
-    const data = await response.json()
+    // const data = await response.json()
 
     let modelsToAdd: LLM[] = []
 
@@ -34,7 +35,8 @@ export const fetchHostedModels = async (profile: Tables<"profiles">) => {
         providerKey = `${provider}_api_key` as keyof typeof profile
       }
 
-      if (profile?.[providerKey] || data.isUsingEnvKeyMap[provider]) {
+      if (profile?.[providerKey]) {
+        //if (profile?.[providerKey] || data.isUsingEnvKeyMap[provider]) {
         const models = LLM_LIST_MAP[provider]
 
         if (Array.isArray(models)) {
@@ -44,7 +46,7 @@ export const fetchHostedModels = async (profile: Tables<"profiles">) => {
     }
 
     return {
-      envKeyMap: data.isUsingEnvKeyMap,
+      envKeyMap: false, //data.isUsingEnvKeyMap,
       hostedModels: modelsToAdd
     }
   } catch (error) {

@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS messages (
     role TEXT NOT NULL CHECK (char_length(role) <= 1000),
     sequence_number INT NOT NULL,
 
+    task_id TEXT,
+
     -- CONSTRAINTS
     CONSTRAINT check_image_paths_length CHECK (array_length(image_paths, 1) <= 16)
 );

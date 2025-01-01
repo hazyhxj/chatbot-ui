@@ -100,7 +100,8 @@ export const createTempMessages = (
       role: "user",
       sequence_number: chatMessages.length,
       updated_at: "",
-      user_id: ""
+      user_id: "",
+      task_id: null
     },
     fileItems: []
   }
@@ -117,7 +118,8 @@ export const createTempMessages = (
       role: "assistant",
       sequence_number: chatMessages.length + 1,
       updated_at: "",
-      user_id: ""
+      user_id: "",
+      task_id: null
     },
     fileItems: []
   }
@@ -208,9 +210,12 @@ export const handleHostedChat = async (
 
   let draftMessages = await buildFinalMessages(payload, profile, chatImages)
 
-  let formattedMessages : any[] = []
+  let formattedMessages: any[] = []
   if (provider === "google") {
-    formattedMessages = await adaptMessagesForGoogleGemini(payload, draftMessages)
+    formattedMessages = await adaptMessagesForGoogleGemini(
+      payload,
+      draftMessages
+    )
   } else {
     formattedMessages = draftMessages
   }
@@ -218,10 +223,16 @@ export const handleHostedChat = async (
   const apiEndpoint =
     provider === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`
 
+  console.log("prev messages", payload.chatMessages)
+  const taskId = payload.chatMessages.at(-2)?.message.task_id
+
+  console.log("taskId", taskId)
+
   const requestBody = {
     chatSettings: payload.chatSettings,
     messages: formattedMessages,
-    customModelId: provider === "custom" ? modelData.hostedId : ""
+    customModelId: provider === "custom" ? modelData.hostedId : "",
+    taskId: taskId
   }
 
   const response = await fetchChatResponse(
@@ -289,6 +300,8 @@ export const processResponse = async (
 ) => {
   let fullText = ""
   let contentToAdd = ""
+  let taskId = ""
+  console.log("")
 
   if (response.body) {
     await consumeReadableStream(
@@ -315,6 +328,13 @@ export const processResponse = async (
         } catch (error) {
           console.error("Error parsing JSON:", error)
         }
+        let parsed = JSON.parse(fullText)
+        console.log("parsed", parsed)
+        taskId = parsed.message.task_id
+        fullText = parsed.message.content
+          .filter((item: { type: string; text: any }) => item.type === "text")
+          .map((item: { type: string; text: any }) => item.text)
+          .join("\n")
 
         setChatMessages(prev =>
           prev.map(chatMessage => {
@@ -337,7 +357,7 @@ export const processResponse = async (
       controller.signal
     )
 
-    return fullText
+    return [fullText, taskId]
   } else {
     throw new Error("Response body is null")
   }
@@ -399,7 +419,8 @@ export const handleCreateMessages = async (
     React.SetStateAction<Tables<"file_items">[]>
   >,
   setChatImages: React.Dispatch<React.SetStateAction<MessageImage[]>>,
-  selectedAssistant: Tables<"assistants"> | null
+  selectedAssistant: Tables<"assistants"> | null,
+  taskId: string
 ) => {
   const finalUserMessage: TablesInsert<"messages"> = {
     chat_id: currentChat.id,
@@ -409,7 +430,8 @@ export const handleCreateMessages = async (
     model: modelData.modelId,
     role: "user",
     sequence_number: chatMessages.length,
-    image_paths: []
+    image_paths: [],
+    task_id: taskId
   }
 
   const finalAssistantMessage: TablesInsert<"messages"> = {
@@ -420,7 +442,8 @@ export const handleCreateMessages = async (
     model: modelData.modelId,
     role: "assistant",
     sequence_number: chatMessages.length + 1,
-    image_paths: []
+    image_paths: [],
+    task_id: taskId
   }
 
   let finalChatMessages: ChatMessage[] = []

@@ -16,28 +16,28 @@ interface SidebarProps {
 export const Sidebar: FC<SidebarProps> = ({ contentType, showSidebar }) => {
   const {
     folders,
-    chats,
-    presets,
-    prompts,
-    files,
-    collections,
-    assistants,
-    tools,
-    models
+    chats
+    // presets,
+    // prompts,
+    // files,
+    // collections,
+    // assistants,
+    // tools,
+    // models
   } = useContext(ChatbotUIContext)
 
   const chatFolders = folders.filter(folder => folder.type === "chats")
-  const presetFolders = folders.filter(folder => folder.type === "presets")
-  const promptFolders = folders.filter(folder => folder.type === "prompts")
-  const filesFolders = folders.filter(folder => folder.type === "files")
-  const collectionFolders = folders.filter(
-    folder => folder.type === "collections"
-  )
-  const assistantFolders = folders.filter(
-    folder => folder.type === "assistants"
-  )
-  const toolFolders = folders.filter(folder => folder.type === "tools")
-  const modelFolders = folders.filter(folder => folder.type === "models")
+  // const presetFolders = folders.filter(folder => folder.type === "presets")
+  // const promptFolders = folders.filter(folder => folder.type === "prompts")
+  // const filesFolders = folders.filter(folder => folder.type === "files")
+  // const collectionFolders = folders.filter(
+  //   folder => folder.type === "collections"
+  // )
+  // const assistantFolders = folders.filter(
+  //   folder => folder.type === "assistants"
+  // )
+  // const toolFolders = folders.filter(folder => folder.type === "tools")
+  // const modelFolders = folders.filter(folder => folder.type === "models")
 
   const renderSidebarContent = (
     contentType: ContentType,
@@ -72,34 +72,34 @@ export const Sidebar: FC<SidebarProps> = ({ contentType, showSidebar }) => {
             case "chats":
               return renderSidebarContent("chats", chats, chatFolders)
 
-            case "presets":
-              return renderSidebarContent("presets", presets, presetFolders)
+            // case "presets":
+            //   return renderSidebarContent("presets", presets, presetFolders)
 
-            case "prompts":
-              return renderSidebarContent("prompts", prompts, promptFolders)
+            // case "prompts":
+            //   return renderSidebarContent("prompts", prompts, promptFolders)
 
-            case "files":
-              return renderSidebarContent("files", files, filesFolders)
+            // case "files":
+            //   return renderSidebarContent("files", files, filesFolders)
 
-            case "collections":
-              return renderSidebarContent(
-                "collections",
-                collections,
-                collectionFolders
-              )
+            // case "collections":
+            //   return renderSidebarContent(
+            //     "collections",
+            //     collections,
+            //     collectionFolders
+            //   )
 
-            case "assistants":
-              return renderSidebarContent(
-                "assistants",
-                assistants,
-                assistantFolders
-              )
+            // case "assistants":
+            //   return renderSidebarContent(
+            //     "assistants",
+            //     assistants,
+            //     assistantFolders
+            //   )
 
-            case "tools":
-              return renderSidebarContent("tools", tools, toolFolders)
+            // case "tools":
+            //   return renderSidebarContent("tools", tools, toolFolders)
 
-            case "models":
-              return renderSidebarContent("models", models, modelFolders)
+            // case "models":
+            //   return renderSidebarContent("models", models, modelFolders)
 
             default:
               return null

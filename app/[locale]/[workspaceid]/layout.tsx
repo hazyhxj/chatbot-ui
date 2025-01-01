@@ -156,6 +156,22 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     const modelData = await getModelWorkspacesByWorkspaceId(workspaceId)
     setModels(modelData.models)
 
+    // setChatSettings({
+    //   model: (searchParams.get("model") ||
+    //     workspace?.default_model ||
+    //     "gpt-4-1106-preview") as LLMID,
+    //   prompt:
+    //     workspace?.default_prompt ||
+    //     "You are a friendly, helpful AI assistant.",
+    //   temperature: workspace?.default_temperature || 0.5,
+    //   contextLength: workspace?.default_context_length || 4096,
+    //   includeProfileContext: workspace?.include_profile_context || true,
+    //   includeWorkspaceInstructions:
+    //     workspace?.include_workspace_instructions || true,
+    //   embeddingsProvider:
+    //     (workspace?.embeddings_provider as "openai" | "local") || "openai"
+    // })
+
     setChatSettings({
       model: (searchParams.get("model") ||
         workspace?.default_model ||
@@ -168,8 +184,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
       includeProfileContext: workspace?.include_profile_context || true,
       includeWorkspaceInstructions:
         workspace?.include_workspace_instructions || true,
-      embeddingsProvider:
-        (workspace?.embeddings_provider as "openai" | "local") || "openai"
+      embeddingsProvider: "local"
     })
 
     setLoading(false)
